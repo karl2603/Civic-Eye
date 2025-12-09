@@ -6,7 +6,7 @@ export const VIOLATION_TYPES: ViolationType[] = [
   { id: 'v3', label: 'Not Wearing Seatbelt', defaultPoints: 15 },
   { id: 'v4', label: 'Signal Jumping / Red Light Violation', defaultPoints: 25 },
   { id: 'v5', label: 'Wrong-Side Driving', defaultPoints: 30 },
-  { id: 'v6', label: 'Over-speeding', defaultPoints: 25 },
+  { id: 'v6', label: 'Over-speeding', defaultPoints: 50 },
   { id: 'v7', label: 'Using Mobile Phone while Driving', defaultPoints: 35 },
   { id: 'v8', label: 'Drunk and Drive', defaultPoints: 100 },
   { id: 'v9', label: 'Driving without Insurance', defaultPoints: 40 },
@@ -44,7 +44,7 @@ export const MOCK_REWARDS: Reward[] = [
     title: '₹100 Fuel Coupon',
     description: 'Valid at any Indian Oil petrol pump for petrol or diesel.',
     pointsCost: 100,
-    imageUrl: 'https://images.unsplash.com/photo-1626847037657-fd3622613ce3?auto=format&fit=crop&q=80&w=800',
+    imageUrl: '/rewards/fuel.jpg',
     category: 'FUEL',
   },
   {
@@ -52,7 +52,7 @@ export const MOCK_REWARDS: Reward[] = [
     title: 'Free Metro/Bus Pass',
     description: 'Unlimited city travel for one week on public transit.',
     pointsCost: 110,
-    imageUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=800',
+    imageUrl: '/rewards/metro.jpg',
     category: 'TRAVEL',
   },
   {
@@ -60,7 +60,7 @@ export const MOCK_REWARDS: Reward[] = [
     title: 'Mobile Recharge Cashback',
     description: 'Instant cashback on prepaid/postpaid recharge.',
     pointsCost: 90,
-    imageUrl: 'https://images.unsplash.com/photo-1512428559087-560fa0db7901?auto=format&fit=crop&q=80&w=800',
+    imageUrl: '/rewards/airtel.jpg',
     category: 'SERVICES',
   },
   {
@@ -84,7 +84,7 @@ export const MOCK_REWARDS: Reward[] = [
     title: 'Priority Government Service',
     description: 'Fast-track service at select civic offices (RTO, Municipal).',
     pointsCost: 100,
-    imageUrl: 'https://images.unsplash.com/photo-1555529733-0e670560f7e1?auto=format&fit=crop&q=80&w=800',
+    imageUrl: '/rewards/services.jpg',
     category: 'SERVICES',
   },
   {
@@ -136,7 +136,7 @@ export const MOCK_USERS: User[] = [
   },
 ];
 
-// Helper to generate dates relative to now
+
 const daysAgo = (days: number) => new Date(Date.now() - 86400000 * days).toISOString();
 
 export const MOCK_REPORTS: Report[] = [
@@ -149,7 +149,7 @@ export const MOCK_REPORTS: Report[] = [
     vehicleNumber: 'KA 01 XY 9999',
     location: 'Indiranagar 100ft Road, Bangalore',
     description: 'Crossed signal while red during peak hours.',
-    timestamp: new Date(Date.now() - 3600000 * 2).toISOString(), // 2 hours ago
+    timestamp: new Date(Date.now() - 3600000 * 2).toISOString(), 
     status: 'PENDING',
     imageUrl: 'https://images.unsplash.com/photo-1566232392379-afd9298e6a46?auto=format&fit=crop&q=80&w=800',
   },
@@ -161,7 +161,7 @@ export const MOCK_REPORTS: Report[] = [
     vehicleNumber: 'TN 09 AZ 7777',
     location: 'Anna Salai, Chennai',
     description: 'Rider and pillion both without helmets and driving on wrong side.',
-    timestamp: new Date(Date.now() - 7200000).toISOString(), // 2 hours ago
+    timestamp: new Date(Date.now() - 7200000).toISOString(), 
     status: 'PENDING',
     imageUrl: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&q=80&w=800',
   },
@@ -228,7 +228,7 @@ export const MOCK_REPORTS: Report[] = [
     timestamp: daysAgo(3),
     status: 'APPROVED',
     imageUrl: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80&w=800',
-    rewardPoints: 50, // 15 + 35
+    rewardPoints: 50, 
     adminComment: 'Evidence clear. Approved.',
   },
   {
