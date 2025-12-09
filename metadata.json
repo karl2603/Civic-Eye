@@ -1,0 +1,8 @@
+{
+  "name": "CivicEye",
+  "description": "A citizen-powered traffic violation reporting platform with an admin verification dashboard and gamified rewards.",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ]
+}
