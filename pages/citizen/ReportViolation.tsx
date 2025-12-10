@@ -5,8 +5,9 @@ export default function ReportViolation() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [isDetecting, setIsDetecting] = useState(false);
   const [error, setError] = useState('');
+  const [ocrPreview, setOcrPreview] = useState('');
 
-  // ✅ FAKE AI DETECTION (NO BACKEND NEEDED)
+  // ✅ Fake AI detection – no backend needed
   const handleExtractPlate = async () => {
     if (!selectedImage) {
       setError('Please select an image first');
@@ -32,10 +33,14 @@ export default function ReportViolation() {
 
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
-      <h1>Report Traffic Violation (AI)</h1>
+      <h1>Report Traffic Violation</h1>
 
+      {/* Plate number input */}
       <div style={{ marginBottom: '20px' }}>
-        <label htmlFor="plateInput" style={{ display: 'block', marginBottom: '8px' }}>
+        <label
+          htmlFor="plateInput"
+          style={{ display: 'block', marginBottom: '8px' }}
+        >
           Vehicle Number Plate
         </label>
         <input
@@ -55,10 +60,31 @@ export default function ReportViolation() {
         />
       </div>
 
+      {/* Image upload + preview + detect button */}
       <div style={{ marginBottom: '20px' }}>
-        <label htmlFor="imageInput" style={{ display: 'block', marginBottom: '8px' }}>
+        <label
+          htmlFor="imageInput"
+          style={{ display: 'block', marginBottom: '8px' }}
+        >
           Upload Vehicle Image
         </label>
+
+        {/* ✅ Image preview (optional but cool) */}
+        {selectedImage && (
+          <img
+            src={URL.createObjectURL(selectedImage)}
+            alt="Vehicle Preview"
+            style={{
+              width: '100%',
+              maxHeight: '250px',
+              objectFit: 'contain',
+              borderRadius: '8px',
+              border: '1px solid #ddd',
+              marginBottom: '10px',
+            }}
+          />
+        )}
+
         <input
           id="imageInput"
           type="file"
@@ -69,10 +95,12 @@ export default function ReportViolation() {
             marginBottom: '10px',
           }}
         />
+
         <button
           onClick={handleExtractPlate}
           disabled={isDetecting}
           style={{
+            width: '100%',
             padding: '10px 20px',
             backgroundColor: isDetecting ? '#ccc' : '#007bff',
             color: 'white',
