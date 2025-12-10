@@ -1,12 +1,12 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { 
-  LayoutDashboard, 
-  PlusCircle, 
-  FileText, 
-  LogOut, 
-  ShieldCheck, 
-  Award
+import {
+  LayoutDashboard,
+  PlusCircle,
+  FileText,
+  LogOut,
+  ShieldCheck,
+  Award,
 } from 'lucide-react';
 
 interface Props {
@@ -16,7 +16,12 @@ interface Props {
   toggleMobile: () => void;
 }
 
-const Sidebar: React.FC<Props> = ({ currentView, setView, isMobileOpen, toggleMobile }) => {
+const Sidebar: React.FC<Props> = ({
+  currentView,
+  setView,
+  isMobileOpen,
+  toggleMobile,
+}) => {
   const { currentUser, logout } = useApp();
 
   const citizenLinks = [
@@ -37,7 +42,7 @@ const Sidebar: React.FC<Props> = ({ currentView, setView, isMobileOpen, toggleMo
     <>
       {/* Mobile Overlay */}
       {isMobileOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-20 md:hidden"
           onClick={toggleMobile}
         />
@@ -49,8 +54,7 @@ const Sidebar: React.FC<Props> = ({ currentView, setView, isMobileOpen, toggleMo
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'} 
         shadow-2xl md:shadow-none flex flex-col`}
       >
-        
-       
+        {/* Logo + Title */}
         <div className="p-6 flex items-center gap-3 border-b border-slate-800/50">
           <div className="bg-slate-800 p-2 rounded-xl shadow-lg flex items-center justify-center">
             <img
@@ -60,7 +64,9 @@ const Sidebar: React.FC<Props> = ({ currentView, setView, isMobileOpen, toggleMo
             />
           </div>
           <div className="leading-tight">
-            <h1 className="text-xl font-bold tracking-tight text-white">CivicEye</h1>
+            <h1 className="text-xl font-bold tracking-tight text-white">
+              CivicEye
+            </h1>
             <p className="text-[10px] text-slate-400 font-medium tracking-wider uppercase">
               Traffic Reporting System
             </p>
@@ -71,12 +77,12 @@ const Sidebar: React.FC<Props> = ({ currentView, setView, isMobileOpen, toggleMo
         <div className="px-6 py-6 border-b border-slate-800/50 bg-slate-900/50">
           <div className="flex items-center gap-3.5">
             <div className="relative">
-              <img 
-                src={currentUser?.avatarUrl} 
-                alt="Profile" 
+              <img
+                src={currentUser?.avatarUrl}
+                alt="Profile"
                 className="w-12 h-12 rounded-full border-2 border-slate-700 object-cover"
               />
-              <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-slate-900 rounded-full"></div>
+              <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-slate-900 rounded-full" />
             </div>
             <div className="overflow-hidden">
               <p className="text-sm font-bold text-white truncate">
@@ -123,7 +129,10 @@ const Sidebar: React.FC<Props> = ({ currentView, setView, isMobileOpen, toggleMo
                     : 'text-slate-400 hover:bg-slate-800 hover:text-blue-200'
                 }`}
               >
-                <Icon size={18} className={isActive ? 'text-white' : 'text-slate-500'} />
+                <Icon
+                  size={18}
+                  className={isActive ? 'text-white' : 'text-slate-500'}
+                />
                 {link.label}
               </button>
             );

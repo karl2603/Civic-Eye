@@ -18,10 +18,40 @@ const SubmitReport: React.FC<Props> = ({ onSuccess }) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // AI Plate Detection States
+  const [plateNumber, setPlateNumber] = useState('');
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [isDetecting, setIsDetecting] = useState(false);
+  const [detectError, setDetectError] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleExtractPlate = async () => {
+    if (!selectedImage) {
+      setDetectError('Please select an image first');
+      return;
+    }
+
+    setIsDetecting(true);
+    setDetectError('');
+
+    try {
+      // Simulate AI processing delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Set fake detected plate number
+      const detectedPlate = 'TN10AB1234';
+      setPlateNumber(detectedPlate);
+      setFormData(prev => ({ ...prev, vehicleNumber: detectedPlate }));
+    } catch (error) {
+      setDetectError('Failed to detect plate number. Please try again.');
+    } finally {
+      setIsDetecting(false);
+    }
   };
 
   const toggleViolationType = (label: string) => {
@@ -55,7 +85,7 @@ const SubmitReport: React.FC<Props> = ({ onSuccess }) => {
     setTimeout(() => {
       addReport({
         violationTypes: formData.violationTypes,
-        vehicleNumber: formData.vehicleNumber.toUpperCase(),
+        vehicleNumber: (plateNumber || formData.vehicleNumber).toUpperCase(),
         location: formData.location,
         description: formData.description,
         imageUrl: formData.imageUrl || 'https://picsum.photos/800/600',
@@ -158,11 +188,35 @@ const SubmitReport: React.FC<Props> = ({ onSuccess }) => {
                         type="text"
                         name="vehicleNumber"
                         placeholder="MH 12 AB 1234"
-                        value={formData.vehicleNumber}
-                        onChange={handleInputChange}
+                        value={plateNumber || formData.vehicleNumber}
+                        onChange={(e) => {
+                          setPlateNumber(e.target.value);
+                          handleInputChange(e);
+                        }}
                         required
                         className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase placeholder-slate-400 font-medium font-mono"
                     />
+                </div>
+                
+                {/* AI Plate Detection */}
+                <div className="mt-3 flex flex-col gap-3">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setSelectedImage(e.target.files?.[0] || null)}
+                    className="text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 file:cursor-pointer"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleExtractPlate}
+                    disabled={isDetecting}
+                    className="w-full px-3 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {isDetecting ? 'Detecting...' : 'Detect from Image'}
+                  </button>
+                  {detectError && (
+                    <p className="text-xs text-red-500 font-medium">{detectError}</p>
+                  )}
                 </div>
                 </div>
 
