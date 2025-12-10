@@ -30,14 +30,12 @@ const SubmitReport: React.FC<Props> = ({ onSuccess }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // 🔹 AI Plate Detection States
   const [plateNumber, setPlateNumber] = useState('');
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [isDetecting, setIsDetecting] = useState(false);
   const [detectError, setDetectError] = useState('');
   const [ocrPreview, setOcrPreview] = useState('');
 
-  // 🔹 Generic input change handler
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -45,7 +43,6 @@ const SubmitReport: React.FC<Props> = ({ onSuccess }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // 🔹 Toggle violation types
   const toggleViolationType = (label: string) => {
     setFormData((prev) => {
       const exists = prev.violationTypes.includes(label);
@@ -58,7 +55,6 @@ const SubmitReport: React.FC<Props> = ({ onSuccess }) => {
     });
   };
 
-  // 🔹 Evidence upload handler (top section)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -67,7 +63,6 @@ const SubmitReport: React.FC<Props> = ({ onSuccess }) => {
     }
   };
 
-  // 🔥 REAL OCR-BASED AI PLATE DETECTION (inside this component)
   const handleExtractPlate = async () => {
     if (!selectedImage) {
       setDetectError('Please select an image first');
@@ -82,7 +77,7 @@ const SubmitReport: React.FC<Props> = ({ onSuccess }) => {
       const formDataToSend = new FormData();
       formDataToSend.append('file', selectedImage);
       formDataToSend.append('language', 'eng');
-      formDataToSend.append('apikey', 'K83171064488957'); // ← your OCR.space API key
+      formDataToSend.append('apikey', 'K83171064488957');
       formDataToSend.append('isOverlayRequired', 'false');
 
       const response = await fetch('https://api.ocr.space/parse/image', {
@@ -105,7 +100,6 @@ const SubmitReport: React.FC<Props> = ({ onSuccess }) => {
         throw new Error(apiError);
       }
 
-      // Merge all ParsedResults text into one string
       const parsedTextRaw: string = Array.isArray(result.ParsedResults)
         ? result.ParsedResults.map((r: any) => r.ParsedText || '').join('\n')
         : result?.ParsedResults?.ParsedText || '';
@@ -120,16 +114,13 @@ const SubmitReport: React.FC<Props> = ({ onSuccess }) => {
         return;
       }
 
-      // Show OCR preview under the button (for user to see what AI saw)
       setOcrPreview(parsedTextRaw.trim());
 
-      // 1️⃣ Strict Indian-style match (example pattern)
       const cleaned = parsedText.replace(/[^A-Z0-9]/g, '');
       const strictMatch = cleaned.match(
         /[A-Z]{2}[0-9]{1,2}[A-Z]{1,2}[0-9]{3,4}/
       );
 
-      // 2️⃣ Relaxed: any A–Z0–9 block length 6–12
       const relaxedMatches = cleaned.match(/[A-Z0-9]{6,12}/g) || [];
 
       let bestCandidate = '';
@@ -137,10 +128,8 @@ const SubmitReport: React.FC<Props> = ({ onSuccess }) => {
       if (strictMatch && strictMatch[0]) {
         bestCandidate = strictMatch[0];
       } else if (relaxedMatches.length > 0) {
-        // choose the longest relaxed match
         bestCandidate = relaxedMatches.sort((a, b) => b.length - a.length)[0];
       } else {
-        // 3️⃣ Fallback: first non-empty line of text
         const fallback = parsedTextRaw
           .split('\n')
           .map((l) => l.trim())
@@ -156,38 +145,34 @@ const SubmitReport: React.FC<Props> = ({ onSuccess }) => {
         bestCandidate = fallback.toUpperCase();
       }
 
-      // Final cleanup: keep only A–Z and 0–9
       bestCandidate = bestCandidate.replace(/[^A-Z0-9]/g, '').toUpperCase();
 
-// ✅ SMART OCR CORRECTION FOR INDIAN PLATES
-// Fix common OCR mistakes: 1 -> T, 1 -> N at starting
-bestCandidate = bestCandidate
-  .replace(/^11/, 'TN')   // 11 → TN
-  .replace(/^1N/, 'TN')   // 1N → TN
-  .replace(/^N1/, 'TN')   // N1 → TN
-  .replace(/^10/, 'TN')   // 10 → TN (rare OCR bug)
-  .replace(/^I1/, 'TN');  // I1 → TN
+      bestCandidate = bestCandidate
+        .replace(/^11/, 'TN')
+        .replace(/^1N/, 'TN')
+        .replace(/^N1/, 'TN')
+        .replace(/^10/, 'TN')
+        .replace(/^I1/, 'TN');
 
-// ✅ Final Indian number plate validation
-const finalMatch = bestCandidate.match(
-  /^[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}$/
-);
-if (bestCandidate.length < 6) {
-  setDetectError(
-    'AI detected text, but it is too short to be a valid vehicle number. Please upload a clearer, closer image.'
-  );
-  return;
-}
+      const finalMatch = bestCandidate.match(
+        /^[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}$/
+      );
 
-if (!finalMatch) {
-  setDetectError(
-  'Low visibility or angled plate detected. For best AI results, upload a clear, front-facing, well-lit number plate image.'
-);
-}
+      if (bestCandidate.length < 6) {
+        setDetectError(
+          'AI detected text, but it is too short to be a valid vehicle number. Please upload a clearer, closer image.'
+        );
+        return;
+      }
 
-// ✅ Set even if not perfect (user can edit)
-setPlateNumber(bestCandidate);
-setFormData((prev) => ({ ...prev, vehicleNumber: bestCandidate }));
+      if (!finalMatch) {
+        setDetectError(
+          'Low visibility or angled plate detected. For best AI results, upload a clear, front-facing, well-lit number plate image.'
+        );
+      }
+
+      setPlateNumber(bestCandidate);
+      setFormData((prev) => ({ ...prev, vehicleNumber: bestCandidate }));
 
       setDetectError('');
     } catch (error: any) {
@@ -200,7 +185,6 @@ setFormData((prev) => ({ ...prev, vehicleNumber: bestCandidate }));
     }
   };
 
-  // 🔹 Submit handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -208,7 +192,6 @@ setFormData((prev) => ({ ...prev, vehicleNumber: bestCandidate }));
       alert('Please select at least one violation type.');
       return;
     }
-
 
     setIsSubmitting(true);
 
@@ -239,7 +222,6 @@ setFormData((prev) => ({ ...prev, vehicleNumber: bestCandidate }));
 
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
         <form onSubmit={handleSubmit} className="p-8 space-y-8">
-          {/* Evidence Upload */}
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-3">
               Evidence (Photo/Video)
@@ -290,7 +272,6 @@ setFormData((prev) => ({ ...prev, vehicleNumber: bestCandidate }));
             </div>
           </div>
 
-          {/* Violation Types */}
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-3 flex justify-between">
               <span>Violation Types</span>
@@ -327,9 +308,7 @@ setFormData((prev) => ({ ...prev, vehicleNumber: bestCandidate }));
             </div>
           </div>
 
-          {/* Vehicle Number + AI + Location */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Vehicle Number + AI */}
             <div>
               <label className="block text-sm font-semibold mb-2">
                 Vehicle Number
@@ -353,7 +332,6 @@ setFormData((prev) => ({ ...prev, vehicleNumber: bestCandidate }));
                 />
               </div>
 
-              {/* AI Detect section */}
               <div className="mt-3 flex flex-col gap-3">
                 {selectedImage && (
                   <img
@@ -397,7 +375,6 @@ setFormData((prev) => ({ ...prev, vehicleNumber: bestCandidate }));
               </div>
             </div>
 
-            {/* Location */}
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">
                 Location
@@ -419,7 +396,6 @@ setFormData((prev) => ({ ...prev, vehicleNumber: bestCandidate }));
             </div>
           </div>
 
-          {/* Description */}
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-2">
               Description (Optional)
@@ -440,7 +416,6 @@ setFormData((prev) => ({ ...prev, vehicleNumber: bestCandidate }));
             </div>
           </div>
 
-          {/* Footer */}
           <div className="pt-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2 text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
               <Lock size={14} className="text-blue-500" />
