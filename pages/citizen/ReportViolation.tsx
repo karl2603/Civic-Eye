@@ -7,7 +7,7 @@ export default function ReportViolation() {
   const [error, setError] = useState('');
   const [ocrPreview, setOcrPreview] = useState('');
 
-  // ✅ Fake AI detection – no backend needed
+  //  Fake AI detection 
   const handleExtractPlate = async () => {
     if (!selectedImage) {
       setError('Please select an image first');
@@ -18,9 +18,7 @@ export default function ReportViolation() {
     setError('');
 
     try {
-      // Simulate AI processing delay
       await new Promise((resolve) => setTimeout(resolve, 1500));
-
       // Fake detected plate number for demo
       const fakeDetectedPlate = 'TN10AB1234';
       setPlateNumber(fakeDetectedPlate);
@@ -69,7 +67,6 @@ export default function ReportViolation() {
           Upload Vehicle Image
         </label>
 
-        {/* ✅ Image preview (optional but cool) */}
         {selectedImage && (
           <img
             src={URL.createObjectURL(selectedImage)}

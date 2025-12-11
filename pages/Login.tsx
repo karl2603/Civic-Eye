@@ -12,7 +12,6 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  // Default role is CITIZEN for new signups
   const role = 'CITIZEN';
 
   const handleSubmit = async (e: React.FormEvent) => {

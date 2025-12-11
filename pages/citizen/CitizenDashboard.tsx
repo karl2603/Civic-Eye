@@ -21,12 +21,10 @@ const CitizenDashboard: React.FC = () => {
             <p className="text-slate-500">Here's what's happening with your contributions.</p>
         </div>
         <div className="flex gap-3">
-             {/* Note: In a real app, these would navigate. For now they are placeholders or handled by parent state if passed down, but Sidebar handles nav. */}
         </div>
       </div>
 
       {/* Stats Grid */}
-      {/* Changed grid columns to be stackable on tablet (md) and only 3 columns on extra large screens to handle sidebar width */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Points Card */}
         <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-8 text-white shadow-xl shadow-slate-200 relative overflow-hidden group">
@@ -100,7 +98,6 @@ const CitizenDashboard: React.FC = () => {
         <div className="lg:col-span-2 space-y-6">
             <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold text-slate-900">Recent Activity</h2>
-                {/* Note: Navigation would be handled by parent view switching in a real route setup */}
             </div>
             
             <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden min-h-[400px]">

@@ -20,7 +20,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [reports, setReports] = useState<Report[]>(MOCK_REPORTS);
   const [users, setUsers] = useState<User[]>(MOCK_USERS);
 
-  // Load from local storage on mount (simulated persistence)
   useEffect(() => {
     const storedUser = localStorage.getItem('civicEye_user');
     if (storedUser) {
@@ -40,7 +39,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         } else {
           resolve(false);
         }
-      }, 800); // Simulate network delay
+      }, 800); 
     });
   };
 
@@ -95,7 +94,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setReports((prev) =>
       prev.map((report) => {
         if (report.id === id) {
-          // If approving, add points to the user who created it
           if (status === 'APPROVED' && report.status !== 'APPROVED') {
              updateUserPoints(report.userId, points);
           }
@@ -114,7 +112,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         return u;
     }));
 
-    // If current user is the one being updated (rare in admin view, but good for consistency)
+    
     if (currentUser?.id === userId) {
         const updatedUser = { ...currentUser, points: currentUser.points + points };
         setCurrentUser(updatedUser);
