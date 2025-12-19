@@ -199,7 +199,7 @@ export const MOCK_REPORTS: Report[] = [
     timestamp: daysAgo(1),
     status: 'PENDING',
     imageUrl:
-      'https://images.unsplash.com/photo-1512428559087-560fa0db7901?auto=format&fit=crop&q=80&w=800',
+      '/mockReport/mobile.jpg',
   },
   {
     id: 'rep_001',
